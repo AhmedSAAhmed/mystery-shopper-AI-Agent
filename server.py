@@ -35,7 +35,11 @@ async def progress_generator(url: str):
     async def callback(message):
         await queue.put(message)
 
-    agent = ProductionAgent(progress_callback=callback)
+    try:
+        agent = ProductionAgent(progress_callback=callback)
+    except Exception as e:
+        yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
+        return
     
     # Run agent in background task
     task = asyncio.create_task(agent.run(url))

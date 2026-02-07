@@ -20,15 +20,19 @@ class ProductionAgent:
         self.progress_callback = progress_callback
         
         if not self.firecrawl_key or not self.google_key:
-            # For demo purposes, we might want to fail gracefully or log
-            print("Missing API Keys in .env")
-            if self.progress_callback:
-                asyncio.run(self.progress_callback("❌ Error: Missing API Keys in .env"))
-            # raise ValueError("Missing API Keys.")
+            error_msg = "❌ Error: Missing API Keys. Please set FIRECRAWL_API_KEY and GOOGLE_API_KEY in Vercel Environment Variables."
+            print(error_msg)
+            # Server will catch the ValueError and send to client
+            raise ValueError(error_msg)
             
-        self.app = FirecrawlApp(api_key=self.firecrawl_key)
-        genai.configure(api_key=self.google_key)
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        try:
+            self.app = FirecrawlApp(api_key=self.firecrawl_key)
+            genai.configure(api_key=self.google_key)
+            self.model = genai.GenerativeModel('gemini-2.0-flash')
+        except Exception as e:
+            error_msg = f"❌ Error initializing AI clients: {str(e)}"
+            print(error_msg)
+            raise ValueError(error_msg)
 
     async def log(self, message):
         print(message)
