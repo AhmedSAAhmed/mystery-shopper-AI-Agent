@@ -7,6 +7,9 @@ import asyncio
 import json
 import logging
 from agent import ProductionAgent
+import os
+import tempfile
+from fastapi.responses import FileResponse
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -14,7 +17,9 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Mount static files (for PDF reports)
+# Mount static files (create directory first to avoid Vercel crash)
+if not os.path.exists("static"):
+    os.makedirs("static")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Templates
@@ -86,9 +91,7 @@ async def read_root(request: Request):
 async def stream_progress(url: str):
     return StreamingResponse(progress_generator(url), media_type="text/event-stream")
 
-import os
-from fastapi.responses import FileResponse
-import tempfile
+
 
 @app.get("/api/download/{filename}")
 async def download_file(filename: str):
