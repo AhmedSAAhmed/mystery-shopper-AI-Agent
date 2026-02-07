@@ -293,9 +293,11 @@ class ProductionAgent:
         pdf.ln(5)
         
         # Save temp image
+        # Save temp image
         # Use a timestamp to avoid conflicts in concurrent requests (basic implementation)
         timestamp = int(time.time())
-        temp_img_path = f"temp_annotated_{timestamp}.png"
+        import tempfile
+        temp_img_path = os.path.join(tempfile.gettempdir(), f"temp_annotated_{timestamp}.png")
         with open(temp_img_path, "wb") as f:
             f.write(image_bytes)
             
