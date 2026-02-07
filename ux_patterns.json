@@ -1,0 +1,51 @@
+[
+    {
+        "id": "P01",
+        "principle": "Progressive disclosure",
+        "description": "Signup forms should ask for minimal information initially",
+        "evidence": "Reducing fields from 6 to 3 improves completion by ~20–40%",
+        "expected_elements": [
+            "#email-input",
+            "#password-input"
+        ],
+        "anti_patterns": [
+            "#phone-input",
+            "#address-input"
+        ],
+        "weight": 15
+    },
+    {
+        "id": "P02",
+        "principle": "Inline validation",
+        "description": "Users should see errors while typing, not after submit",
+        "evidence": "Inline validation reduces abandonment after errors",
+        "expected_behavior": [
+            "real-time-feedback"
+        ],
+        "related_elements": [
+            "#password-input"
+        ],
+        "weight": 20
+    },
+    {
+        "id": "P03",
+        "principle": "Clear primary CTA",
+        "description": "Signup CTA must be visually dominant and action-oriented",
+        "evidence": "Ambiguous CTAs reduce conversion",
+        "expected_elements": [
+            "#signup-btn"
+        ],
+        "weight": 10
+    },
+    {
+        "id": "P04",
+        "principle": "Trust reinforcement",
+        "description": "Users need reassurance before account creation",
+        "evidence": "Security reassurance improves signup confidence",
+        "expected_elements": [
+            "privacy-note",
+            "no-spam-text"
+        ],
+        "weight": 10
+    }
+]

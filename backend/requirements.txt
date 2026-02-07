@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+openai
+python-dotenv
+pandas
+jinja2
+python-multipart

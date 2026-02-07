@@ -690,6 +690,8 @@
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
 
+        const progressPercentage = document.getElementById('progressPercentage');
+
         // Functions
         function addLog(message) {
             const entry = document.createElement('div');
@@ -701,6 +703,7 @@
         function updateProgress(percent, text) {
             progressBar.style.width = percent + '%';
             progressText.innerText = text;
+            if (progressPercentage) progressPercentage.innerText = percent + '%';
         }
 
         function addMessage(text, isUser = false) {

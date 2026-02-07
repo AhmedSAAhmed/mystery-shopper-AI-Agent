@@ -17,10 +17,17 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Mount static files (create directory first to avoid Vercel crash)
-if not os.path.exists("static"):
-    os.makedirs("static")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Mount static files (handle read-only file systems like Vercel)
+static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+if not os.path.exists(static_dir):
+    try:
+        os.makedirs(static_dir)
+    except OSError:
+        # Keep going if we can't create the directory (e.g. read-only filesystem)
+        logger.warning(f"Could not create static directory at {static_dir}. Skipping StaticFiles mount.")
+
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # Templates
 templates = Jinja2Templates(directory="templates")
