@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+requests
+google-generativeai
+firecrawl-py
+fpdf
+python-dotenv
+pillow
+jinja2

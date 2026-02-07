@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Experience - AI Agent Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #FF2E97;
+            --neon-blue: #00F0FF;
+            --neon-purple: #BD00FF;
+            --cyber-dark: #0A0E27;
+            --cyber-darker: #050812;
+            --cyber-card: #151B3B;
+            --cyber-border: #1E2749;
+            --text-primary: #E0E7FF;
+            --text-secondary: #8B93B8;
+            --success-green: #00FF88;
+            --warning-yellow: #FFD700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--cyber-darker);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.4;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(189, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 46, 151, 0.1) 0%, transparent 50%);
+            animation: bgShift 15s ease infinite;
+        }
+
+        @keyframes bgShift {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue), var(--neon-purple));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientFlow 3s ease infinite;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            margin-top: 20px;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--cyber-card);
+            border: 2px solid var(--cyber-border);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--cyber-border);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: iconFloat 3s ease infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Input Sections */
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--neon-blue);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px 20px;
+            background: var(--cyber-darker);
+            border: 2px solid var(--cyber-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Button */
+        .btn {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:disabled {
+            filter: grayscale(1);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 46, 151, 0.4);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .progress-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: var(--cyber-darker);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--cyber-border);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            width: 0%;
+            position: relative;
+            transition: width 0.3s ease;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transform: translateX(-100%);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        .log-container {
+            margin-top: 20px;
+            height: 150px;
+            background: var(--cyber-darker);
+            border: 1px solid var(--cyber-border);
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            overflow-y: auto;
+            display: none; 
+        }
+
+        .log-container.active {
+            display: block;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            border-left: 2px solid var(--neon-blue);
+            padding-left: 10px;
+            animation: slideInLeft 0.3s ease;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Chat Container (Existing styles kept) */
+        .chat-container {
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--cyber-darker);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-blue) var(--cyber-darker);
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: var(--cyber-darker);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--neon-blue);
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            margin-left: auto;
+        }
+
+        .message.bot .message-bubble {
+            background: var(--cyber-card);
+            border: 1px solid var(--cyber-border);
+        }
+
+        .message-bubble {
+            display: inline-block;
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            background: var(--cyber-darker);
+            border: 2px solid var(--cyber-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 20px rgba(189, 0, 255, 0.2);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.4);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--success-green);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--success-green);
+            margin-top: 15px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success-green);
+            border-radius: 50%;
+            animation: blink 1.5s ease infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .title {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .chat-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="grid-overlay"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Product Experience</h1>
+            <p class="subtitle" style="font-size: 0.85rem; margin-top: 15px; line-height: 1.6;">
+                Automating signup flows with AI-powered intelligence.<br>
+                Enter a URL, analyze the experience, and generate solutions instantly. 🚀
+            </p>
+            <p class="subtitle">AI-Powered Signup Automation Dashboard</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- Left Column - Input Controls -->
+            <div>
+
+                <!-- Website Link Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🌐</div>
+                        <h2 class="card-title">Target Website</h2>
+                    </div>
+                    
+                    <div class="input-section">
+                        <label class="input-label">🔗 Target Website URL</label>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px; font-style: italic;">
+                            ⏳ Test website: https://join.deriv.com/derivmt5 | Stay tuned for future updates! ✨
+                        </p>
+                        <input 
+                            type="url" 
+                            class="input-field" 
+                            id="websiteUrl" 
+                            placeholder="https://example.com/signup"
+                            value="https://join.deriv.com/derivmt5"
+                        >
+                    </div>
+
+                    <button class="btn" id="analyzeBtn">
+                        <span>🚀 Start Agent Analysis</span>
+                    </button>
+
+                    <!-- Progress Section -->
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-label">
+                            <span id="progressText">Initializing Agent...</span>
+                            <span id="progressPercentage">0%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                        
+                        <div class="log-container active" id="logContainer">
+                            <!-- Log entries will appear here -->
+                        </div>
+                    </div>
+
+                    <div class="status-badge">
+                        <div class="status-dot"></div>
+                        <span id="systemStatus">System Ready</span>
+                    </div>
+
+                    <!-- Report Download Button (Hidden initially) -->
+                    <a id="downloadReportBtn" class="btn" style="margin-top: 15px; display: none; background: linear-gradient(135deg, #00FF88, #00F0FF); color: #050812;" download>
+                        📄 Download Audit Report
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Column - Chat Interface -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💬</div>
+                    <h2 class="card-title">AI Assistant</h2>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot">
+                            <div class="message-bubble">
+                                👋 Hey there! I'm your Product Experience AI assistant. Provide a URL and I'll deploy the agent to analyze it!
+                            </div>
+                            <div class="message-time">Just now</div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <input 
+                            type="text" 
+                            class="chat-input" 
+                            id="chatInput" 
+                            placeholder="Ask me anything about automation..."
+                        >
+                        <button class="send-btn" id="sendBtn">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const websiteUrl = document.getElementById('websiteUrl');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const logContainer = document.getElementById('logContainer');
+        const systemStatus = document.getElementById('systemStatus');
+        const downloadReportBtn = document.getElementById('downloadReportBtn');
+        
+        // Chat Elements
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // Functions
+        function addLog(message) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerText = message;
+            logContainer.insertBefore(entry, logContainer.firstChild); // Newest first
+        }
+
+        function updateProgress(percent, text) {
+            progressBar.style.width = percent + '%';
+            progressText.innerText = text;
+        }
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            messageDiv.innerHTML = `
+                <div class="message-bubble">${text}</div>
+                <div class="message-time">${time}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Logic
+        analyzeBtn.addEventListener('click', () => {
+            const url = websiteUrl.value.trim();
+            if (!url) return;
+
+            // Reset UI
+            progressContainer.classList.add('active');
+            downloadReportBtn.style.display = 'none';
+            logContainer.innerHTML = '';
+            updateProgress(0, "Starting Agent...");
+            analyzeBtn.disabled = true;
+            systemStatus.innerText = "Agent Running...";
+            addMessage(`🚀 Deployed agent to analyze: ${url}`, false);
+
+            // Connect SSE
+            const eventSource = new EventSource(`/api/stream?url=${encodeURIComponent(url)}`);
+
+            eventSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                if (data.message) {
+                    addLog(data.message);
+                    
+                    // Simple logic to drive progress bar based on keywords
+                    if (data.message.includes("Starting")) updateProgress(10, "Initializing...");
+                    if (data.message.includes("Capturing")) updateProgress(30, "Scraping Target...");
+                    if (data.message.includes("Analyzing")) updateProgress(60, "Gemini Vision Analysis...");
+                    if (data.message.includes("Drawing")) updateProgress(80, "Annotating Visuals...");
+                    if (data.message.includes("Generating PDF")) updateProgress(90, "Finalizing Report...");
+                    if (data.message.includes("Report generated")) updateProgress(100, "Complete!");
+                }
+
+                if (data.type === 'complete') {
+                    eventSource.close();
+                    analyzeBtn.disabled = false;
+                    systemStatus.innerText = "Analysis Complete";
+                    updateProgress(100, "Done!");
+                    
+                    downloadReportBtn.href = "/" + data.report_url; // Assuming returns static/report.pdf
+                    downloadReportBtn.style.display = 'flex';
+                    analyzeBtn.querySelector('span').innerText = "🚀 Run Another Analysis";
+                    
+                    addMessage(`✅ Analysis complete! I've generated the audit report. You can download it now.`, false);
+                }
+
+                if (data.type === 'error') {
+                    eventSource.close();
+                    analyzeBtn.disabled = false;
+                    systemStatus.innerText = "Error";
+                    addLog("❌ Error: " + data.message);
+                    addMessage(`❌ Something went wrong: ${data.message}`, false);
+                }
+            };
+
+            eventSource.onerror = function(err) {
+                console.error("EventSource failed:", err);
+                eventSource.close();
+                analyzeBtn.disabled = false;
+                systemStatus.innerText = "Connection Failed";
+            };
+        });
+
+        // Chat Interaction (Simple)
+        sendBtn.addEventListener('click', () => {
+            const text = chatInput.value.trim();
+            if (text) {
+                addMessage(text, true);
+                chatInput.value = '';
+                setTimeout(() => addMessage("🤖 I am focused on the analysis task right now. Please check the logs!", false), 1000);
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBtn.click();
+        });
+
+    </script>
+</body>
+</html>

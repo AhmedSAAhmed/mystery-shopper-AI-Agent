@@ -1,0 +1,7 @@
+
+.env
+__pycache__/
+*.pdf
+/static/audit_report.pdf
+venv/
+.DS_Store
