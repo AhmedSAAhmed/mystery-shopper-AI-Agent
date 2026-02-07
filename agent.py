@@ -4,7 +4,8 @@ import time
 import json
 import requests
 import asyncio
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from firecrawl import FirecrawlApp
 from fpdf import FPDF
 from PIL import Image, ImageDraw, ImageFont
@@ -27,8 +28,7 @@ class ProductionAgent:
             
         try:
             self.app = FirecrawlApp(api_key=self.firecrawl_key)
-            genai.configure(api_key=self.google_key)
-            self.model = genai.GenerativeModel('gemini-2.0-flash')
+            self.client = genai.Client(api_key=self.google_key)
         except Exception as e:
             error_msg = f"❌ Error initializing AI clients: {str(e)}"
             print(error_msg)
@@ -156,13 +156,14 @@ class ProductionAgent:
             # Run Gemini call in executor
             loop = asyncio.get_event_loop()
             
-            generation_config = genai.types.GenerationConfig(
+            generation_config = types.GenerateContentConfig(
                 response_mime_type="application/json"
             )
 
-            response = await loop.run_in_executor(None, lambda: self.model.generate_content(
-                [prompt, img],
-                generation_config=generation_config
+            response = await loop.run_in_executor(None, lambda: self.client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=[prompt, img],
+                config=generation_config
             ))
             
             full_response = json.loads(response.text)
