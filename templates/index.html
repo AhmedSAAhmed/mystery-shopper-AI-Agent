@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Experience - AI Agent Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --neon-pink: #FF2E97;
@@ -46,7 +49,7 @@
             height: 100%;
             z-index: 0;
             opacity: 0.4;
-            background: 
+            background:
                 radial-gradient(circle at 20% 50%, rgba(189, 0, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 40% 20%, rgba(255, 46, 151, 0.1) 0%, transparent 50%);
@@ -54,8 +57,15 @@
         }
 
         @keyframes bgShift {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.1) rotate(5deg); }
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.1) rotate(5deg);
+            }
         }
 
         .grid-overlay {
@@ -64,7 +74,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
@@ -73,85 +83,50 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
+            /* Reduced from 1400px to ensure it fits better */
+            width: 95%;
+            /* Responsive width */
             margin: 0 auto;
             padding: 20px;
             position: relative;
             z-index: 1;
+            /* Center vertically if content implies, but usually top-aligned is better for dashboards */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* Header */
         .header {
             text-align: center;
             padding: 40px 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             animation: slideDown 0.8s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue), var(--neon-purple));
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientFlow 3s ease infinite;
-            margin-bottom: 10px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            position: relative;
-            display: inline-block;
-        }
-
-        @keyframes gradientFlow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-            animation: pulse 2s ease infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            letter-spacing: 2px;
-            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+            /* Constrain header width */
         }
 
         /* Main Grid */
         .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
+            display: flex;
+            /* Changed from grid to flex for better centering control */
+            flex-wrap: wrap;
             gap: 30px;
-            margin-bottom: 30px;
+            width: 100%;
+            justify-content: center;
+            /* Center the cards */
             animation: fadeIn 1s ease 0.3s both;
+        }
+
+        /* Ensure columns have appropriate widths */
+        .main-column {
+            flex: 1;
+            min-width: 350px;
+            /* Prevent too narrow */
+            max-width: 600px;
+            /* Prevent too wide */
         }
 
         @keyframes fadeIn {
@@ -159,6 +134,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -219,8 +195,15 @@
         }
 
         @keyframes iconFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
         }
 
         .card-title {
@@ -327,7 +310,7 @@
             margin-top: 30px;
             display: none;
         }
-        
+
         .progress-container.active {
             display: block;
             animation: fadeIn 0.5s ease;
@@ -364,18 +347,18 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.4),
-                transparent
-            );
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.4),
+                    transparent);
             transform: translateX(-100%);
             animation: shimmer 1.5s infinite;
         }
 
         @keyframes shimmer {
-            100% { transform: translateX(100%); }
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         .log-container {
@@ -389,7 +372,7 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
             overflow-y: auto;
-            display: none; 
+            display: none;
         }
 
         .log-container.active {
@@ -404,8 +387,15 @@
         }
 
         @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* Chat Container (Existing styles kept) */
@@ -450,6 +440,7 @@
                 opacity: 0;
                 transform: translateX(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -548,8 +539,15 @@
         }
 
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
         }
 
         /* Responsive */
@@ -579,6 +577,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="bg-animation"></div>
     <div class="grid-overlay"></div>
@@ -595,7 +594,7 @@
 
         <div class="main-grid">
             <!-- Left Column - Input Controls -->
-            <div>
+            <div class="main-column">
 
                 <!-- Website Link Card -->
                 <div class="card">
@@ -603,19 +602,15 @@
                         <div class="card-icon">🌐</div>
                         <h2 class="card-title">Target Website</h2>
                     </div>
-                    
+
                     <div class="input-section">
                         <label class="input-label">🔗 Target Website URL</label>
-                        <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px; font-style: italic;">
+                        <p
+                            style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px; font-style: italic;">
                             ⏳ Test website: https://join.deriv.com/derivmt5 | Stay tuned for future updates! ✨
                         </p>
-                        <input 
-                            type="url" 
-                            class="input-field" 
-                            id="websiteUrl" 
-                            placeholder="https://example.com/signup"
-                            value="https://join.deriv.com/derivmt5"
-                        >
+                        <input type="url" class="input-field" id="websiteUrl" placeholder="https://example.com/signup"
+                            value="https://join.deriv.com/derivmt5">
                     </div>
 
                     <button class="btn" id="analyzeBtn">
@@ -631,7 +626,7 @@
                         <div class="progress-track">
                             <div class="progress-bar" id="progressBar"></div>
                         </div>
-                        
+
                         <div class="log-container active" id="logContainer">
                             <!-- Log entries will appear here -->
                         </div>
@@ -643,14 +638,16 @@
                     </div>
 
                     <!-- Report Download Button (Hidden initially) -->
-                    <a id="downloadReportBtn" class="btn" style="margin-top: 15px; display: none; background: linear-gradient(135deg, #00FF88, #00F0FF); color: #050812;" download>
+                    <a id="downloadReportBtn" class="btn"
+                        style="margin-top: 15px; display: none; background: linear-gradient(135deg, #00FF88, #00F0FF); color: #050812;"
+                        download>
                         📄 Download Audit Report
                     </a>
                 </div>
             </div>
 
             <!-- Right Column - Chat Interface -->
-            <div class="card">
+            <div class="card main-column">
                 <div class="card-header">
                     <div class="card-icon">💬</div>
                     <h2 class="card-title">AI Assistant</h2>
@@ -660,19 +657,16 @@
                     <div class="chat-messages" id="chatMessages">
                         <div class="message bot">
                             <div class="message-bubble">
-                                👋 Hey there! I'm your Product Experience AI assistant. Provide a URL and I'll deploy the agent to analyze it!
+                                👋 Hey there! I'm your Product Experience AI assistant. Provide a URL and I'll deploy
+                                the agent to analyze it!
                             </div>
                             <div class="message-time">Just now</div>
                         </div>
                     </div>
 
                     <div class="chat-input-container">
-                        <input 
-                            type="text" 
-                            class="chat-input" 
-                            id="chatInput" 
-                            placeholder="Ask me anything about automation..."
-                        >
+                        <input type="text" class="chat-input" id="chatInput"
+                            placeholder="Ask me anything about automation...">
                         <button class="send-btn" id="sendBtn">Send</button>
                     </div>
                 </div>
@@ -690,7 +684,7 @@
         const logContainer = document.getElementById('logContainer');
         const systemStatus = document.getElementById('systemStatus');
         const downloadReportBtn = document.getElementById('downloadReportBtn');
-        
+
         // Chat Elements
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
@@ -738,12 +732,12 @@
             // Connect SSE
             const eventSource = new EventSource(`/api/stream?url=${encodeURIComponent(url)}`);
 
-            eventSource.onmessage = function(event) {
+            eventSource.onmessage = function (event) {
                 const data = JSON.parse(event.data);
-                
+
                 if (data.message) {
                     addLog(data.message);
-                    
+
                     // Simple logic to drive progress bar based on keywords
                     if (data.message.includes("Starting")) updateProgress(10, "Initializing...");
                     if (data.message.includes("Capturing")) updateProgress(30, "Scraping Target...");
@@ -758,11 +752,11 @@
                     analyzeBtn.disabled = false;
                     systemStatus.innerText = "Analysis Complete";
                     updateProgress(100, "Done!");
-                    
+
                     downloadReportBtn.href = "/" + data.report_url; // Assuming returns static/report.pdf
                     downloadReportBtn.style.display = 'flex';
                     analyzeBtn.querySelector('span').innerText = "🚀 Run Another Analysis";
-                    
+
                     addMessage(`✅ Analysis complete! I've generated the audit report. You can download it now.`, false);
                 }
 
@@ -775,7 +769,7 @@
                 }
             };
 
-            eventSource.onerror = function(err) {
+            eventSource.onerror = function (err) {
                 console.error("EventSource failed:", err);
                 eventSource.close();
                 analyzeBtn.disabled = false;
@@ -799,4 +793,5 @@
 
     </script>
 </body>
+
 </html>
