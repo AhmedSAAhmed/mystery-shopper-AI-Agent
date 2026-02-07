@@ -10,7 +10,7 @@ An automated AI agent that acts as a "Mystery Shopper" to analyze e-commerce lan
 - **PDF Reports**: Generates detailed PDF reports containing an executive summary, key findings, and annotated visuals.
 - **Real-Time Feedback**: Streams progress updates to the user interface via Server-Sent Events (SSE).
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Backend**: Python, FastAPI
 - **AI & Vision**: Google Gemini (`google-genai`), Firecrawl (`firecrawl-py`)
@@ -20,35 +20,33 @@ An automated AI agent that acts as a "Mystery Shopper" to analyze e-commerce lan
 - **Deployment**: Ready for Vercel (Serverless)
 
 ## 🏗️ Architecture
-
 ```mermaid
-graph TD
-    User[User] -->|Submit URL| UI[Web Interface / Client]
-    UI -->|POST /api/stream| Server[FastAPI Server]
-    Server -->|Instantiate| Agent[Production Agent]
+flowchart TD
+    User["User"] -->|Submit URL| UI["Web Interface / Client"]
+    UI -->|"POST /api/stream"| Server["FastAPI Server"]
+    Server -->|Instantiate| Agent["Production Agent"]
     
-    subgraph "🔍 Analysis Phase"
-        Agent -->|1. Capture Screenshot| Firecrawl[Firecrawl API]
-        Firecrawl -->|Return Image Bytes| Agent
-        Agent -->|2. Multimodal Analysis| Gemini[Google Gemini 2.0]
-        Gemini -->|Return JSON (Coords + Critique)| Agent
+    subgraph Analysis ["🔍 Analysis Phase"]
+        Agent -->|"1. Capture Screenshot"| Firecrawl["Firecrawl API"]
+        Firecrawl -->|"Return Image Bytes"| Agent
+        Agent -->|"2. Multimodal Analysis"| Gemini["Google Gemini 2.0"]
+        Gemini -->|"Return JSON (Coords + Critique)"| Agent
     end
     
-    subgraph "🎨 Processing Phase"
-        Agent -->|3. Draw Annotations| PIL[Pillow Library]
-        PIL -->|Annotated Image| Agent
+    subgraph Processing ["🎨 Processing Phase"]
+        Agent -->|"3. Draw Annotations"| PIL["Pillow Library"]
+        PIL -->|"Annotated Image"| Agent
     end
     
-    subgraph "📄 Reporting Phase"
-        Agent -->|4. Compile Data| PDF[FPDF Engine]
-        PDF -->|Generate .pdf| Storage[Temp Storage /tmp]
+    subgraph Reporting ["📄 Reporting Phase"]
+        Agent -->|"4. Compile Data"| PDF["FPDF Engine"]
+        PDF -->|"Generate .pdf"| Storage["Temp Storage /tmp"]
     end
     
-    Storage -->|Download URL| Server
-    Server -->|SSE Events| UI
-    UI -->|Download Report| User
+    Storage -->|"Download URL"| Server
+    Server -->|"SSE Events"| UI
+    UI -->|"Download Report"| User
 ```
-
 ## 📦 Installation
 
 1.  **Clone the repository:**
