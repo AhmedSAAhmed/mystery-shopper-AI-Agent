@@ -1,6 +1,6 @@
 # AI Agent UI Product Analysis 🕵️‍♂️
 
-An automnmous AI product UI agent that analyze your landing page for fintech (Trading Platforms). It provides actionable UX/UI conversion optimization feedback, complete with "viral-style" visual annotations and a professional PDF report.
+An autonomous AI product UI agent that analyze your landing page for fintech (Trading Platforms). It provides actionable UX/UI conversion optimization feedback, complete with "viral-style" visual annotations and a professional PDF report.
 
 ##  Features
 
