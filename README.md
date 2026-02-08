@@ -1,6 +1,6 @@
 # AI Agent UI Product Analysis 🕵️‍♂️
 
-An automated AI agent that acts as a "Mystery Shopper" to analyze e-commerce landing pages. It provides actionable UX/UI conversion optimization feedback, complete with "viral-style" visual annotations and a professional PDF report.
+An automnmous AI product UI agent that analyze your landing page for fintech (Trading Platforms). It provides actionable UX/UI conversion optimization feedback, complete with "viral-style" visual annotations and a professional PDF report.
 
 ##  Features
 
